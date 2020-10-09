@@ -9,12 +9,6 @@ public class Hotel {
     static  int costofLakewood;
     static  int costofBridgewood;
     static int CostofRidgewood;
-	public static Hotel h1_regular;
-	public static Hotel h2_regular;
-	public static Hotel h3_regular;
-	public static Hotel h1_rewards;
-	public static Hotel h2_rewards;
-	public static Hotel h3_rewards;
     int rating;
     
     HashMap<String,ArrayList<Hotel>> hotel=new HashMap<String,ArrayList<Hotel>>();
@@ -104,12 +98,12 @@ public class Hotel {
     	  ArrayList<String> dates=new ArrayList<>();
           dates.add("3/10/2020");
           dates.add("4/10/2020");
-    	  h1_regular= new Hotel("Lakewood",110,90,3);
-          h1_rewards =new Hotel("Lakewood",80,80,3);
-          h2_regular= new Hotel("Bridgewood",150,60,4);
-          h2_rewards= new Hotel("Bridgewood",110,50,4);
-          h3_regular= new Hotel("Ridgewood",220,150,5);
-          h3_rewards= new Hotel("Ridgewood",100,40,5);
+    	  Hotel h1_regular= new Hotel("Lakewood",110,90,3);
+          Hotel h1_rewards =new Hotel("Lakewood",80,80,3);
+          Hotel h2_regular= new Hotel("Bridgewood",150,60,4);
+          Hotel h2_rewards= new Hotel("Bridgewood",110,50,4);
+          Hotel h3_regular= new Hotel("Ridgewood",220,150,5);
+          Hotel h3_rewards= new Hotel("Ridgewood",100,40,5);
           System.out.println("Enter Whether Rewards or Regular");
           String customertype=userInput.nextLine();
           String result=calculateprice(dates,customertype);
