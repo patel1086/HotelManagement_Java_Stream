@@ -6,9 +6,9 @@ public class Hotel {
     public  String hotelname;
     public int weekdayrate;
     public int weekendrate;
-    public int costofLakewood;
-    public int costofBridgewood;
-    public int  getCostofRidgewood;
+    static  int costofLakewood;
+    static  int costofBridgewood;
+    static int CostofRidgewood;
 	public static Hotel h1_regular;
 	public static Hotel h2_regular;
 	public static Hotel h3_regular;
@@ -29,25 +29,52 @@ public class Hotel {
         this.weekendrate=weekendrate;
         this.rating=rating;
     }
-    
-    public static int calculateprice(String customer) throws ParseException {
-    	int cost=0;
-    	if(customer.equals("Regular"))
-    	{
-    	    cost=min(h1_regular.weekdayrate,h2_regular.weekdayrate,h3_regular.weekdayrate);
-    		return cost;
-    	}
-    	else if(customer.equals("Rewards"))
-    	{
-    		cost=min(h1_rewards.weekdayrate,h2_rewards.weekdayrate,h3_rewards.weekdayrate);
-    		return cost;
-    	}
-    	else
-    	{
-    		System.out.println("Please enter correct customer type 1. Regular or 2. Rewards");
-    		return cost;
-    	}
+    public static String calculateprice(ArrayList<String> list,String customer) throws ParseException{
+    	 Iterator<String > it= list.iterator();
+         
+		if(customer.equals("Regular")) {
+             while (it.hasNext()) {
+                 String day = getDayofWeek(it.next());
+                 if (day.equals("Sun") || day.equals("Sat")) {
+                     costofLakewood += 90;
+                     costofBridgewood += 60;
+                     CostofRidgewood += 150;
+                 } else {
+                     costofLakewood += 110;
+                     costofBridgewood += 150;
+                     CostofRidgewood += 220;
+                 }
+             }
+         }
+         else
+         {
+             while (it.hasNext()) {
+                 String day = getDayofWeek(it.next());
+                 if (day.equals("Sun") || day.equals("Sat")) {
+                     costofLakewood += 80;
+                     costofBridgewood += 50;
+                     CostofRidgewood += 40;
+                 } else {
+                     costofLakewood += 80;
+                     costofBridgewood += 110;
+                     CostofRidgewood += 100;
+                 }
+             }
+         }
     	
+		int result=min(costofLakewood,costofBridgewood,CostofRidgewood);
+		if(result==costofLakewood) {
+            System.out.println("Cost is: " + result);
+            return "Lakewood";
+        }
+        else if(result==costofBridgewood) {
+            System.out.println("Cost is: " + result);
+            return "Bridgewood";
+        }
+        else {
+            System.out.println("Cost is: " + result);
+            return "Ridgewood";
+        }
     }
     public static int min(int price_L,int price_B,int price_R)
     {
@@ -64,9 +91,19 @@ public class Hotel {
     	else
     		return price_R;
     }
+    public static String getDayofWeek(String date) throws ParseException {
+    	SimpleDateFormat format1=new SimpleDateFormat("dd/MM/yyyy");
+        Date dt1=format1.parse(date);
+        DateFormat format2=new SimpleDateFormat("EE");
+        String finalDay=format2.format(dt1);
+        return  finalDay;
+    }
     public static void main(String[] args) throws ParseException {
     	  Scanner userInput=new Scanner(System.in);
     	  Display();
+    	  ArrayList<String> dates=new ArrayList<>();
+          dates.add("3/10/2020");
+          dates.add("4/10/2020");
     	  h1_regular= new Hotel("Lakewood",110,90,3);
           h1_rewards =new Hotel("Lakewood",80,80,3);
           h2_regular= new Hotel("Bridgewood",150,60,4);
@@ -75,13 +112,7 @@ public class Hotel {
           h3_rewards= new Hotel("Ridgewood",100,40,5);
           System.out.println("Enter Whether Rewards or Regular");
           String customertype=userInput.nextLine();
-          int result=calculateprice(customertype);
-          //calculating cost for one day period
-          if(result==h1_regular.weekdayrate || result==h1_rewards.weekdayrate)
-        	  System.out.println(h1_regular.hotelname+" "+result);
-          else if(result==h2_regular.weekdayrate || result==h2_rewards.weekdayrate)
-        	  	   System.out.println(h2_regular.hotelname+" "+result);
-          else
-        	  System.out.println(h3_regular.hotelname+" "+result);
+          String result=calculateprice(dates,customertype);
+          System.out.println(result);
     }
 }
