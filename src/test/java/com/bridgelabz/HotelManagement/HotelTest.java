@@ -37,7 +37,7 @@ public class HotelTest {
 		ArrayList<String> dates = new ArrayList<>();
 		dates.add("3/10/2020");
 		dates.add("4/10/2020");
-		String result = hotel.calculateprice(dates, "Regular","goodRatingHotel");
+		String result = hotel.calculateprice(dates, "Rewards","goodRatingHotel");
 		Assert.assertEquals("Ridgewood", result);
 	}
 }
