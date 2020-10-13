@@ -1,117 +1,141 @@
 package com.bridgelabz.HotelManagement;
+
 import java.util.*;
 
 import java.text.*;
+
 public class Hotel {
-    public  String hotelname;
-    public int weekdayrate;
-    public int weekendrate;
-    static  int costofLakewood;
-    static  int costofBridgewood;
-    static int CostofRidgewood;
-     public int rating;
-    public static Hotel h1_regular;
-    public static Hotel h2_regular;
-    public static Hotel h3_regular;
-    public static Hotel h1_rewards;
-    public static Hotel h2_rewards;
-    public static Hotel h3_rewards;
-    
-    HashMap<String,ArrayList<Hotel>> hotel=new HashMap<String,ArrayList<Hotel>>();
-    
-    public static void Display()
-    {
-        System.out.println("Welcome to Hostel Reservation System");
-    }
-    public Hotel(String hotelname,int weekdayrate, int weekendrate,int rating) {
-        this.hotelname = hotelname;
-        this.weekdayrate=weekdayrate;
-        this.weekendrate=weekendrate;
-        this.rating=rating;
-    }
-    public static String calculateprice(ArrayList<String> list,String customer) throws ParseException{
-    	 Iterator<String > it= list.iterator();
-         
-		if(customer.equals("Regular")) {
-             while (it.hasNext()) {
-                 String day = getDayofWeek(it.next());
-                 if (day.equals("Sun") || day.equals("Sat")) {
-                     costofLakewood += 90;
-                     costofBridgewood += 60;
-                     CostofRidgewood += 150;
-                 } else {
-                     costofLakewood += 110;
-                     costofBridgewood += 150;
-                     CostofRidgewood += 220;
-                 }
-             }
-         }
-         else
-         {
-             while (it.hasNext()) {
-                 String day = getDayofWeek(it.next());
-                 if (day.equals("Sun") || day.equals("Sat")) {
-                     costofLakewood += 80;
-                     costofBridgewood += 50;
-                     CostofRidgewood += 40;
-                 } else {
-                     costofLakewood += 80;
-                     costofBridgewood += 110;
-                     CostofRidgewood += 100;
-                 }
-             }
-         }
-    	
-		int result=min(costofLakewood,costofBridgewood,CostofRidgewood);
-		if(result==costofLakewood) {
-            System.out.println("Lakewood Hotel, Rating: "+h1_regular.rating+" Total cost for staying of "+list.size()+" days is: " + result);
-            return "Lakewood";
-        }
-        else if(result==costofBridgewood) {
-            System.out.println("Bridgewood Hotel, Rating: "+h2_regular.rating+" Total cost for staying of "+list.size()+" days is: " + result);
-            return "Bridgewood";
-        }
-        else {
-            System.out.println("Ridgewood Hotel, Rating: "+h3_regular.rating+" Total cost for staying of "+list.size()+" days is: " + result);
-            return "Ridgewood";
-        }
-    }
-    public static int min(int price_L,int price_B,int price_R)
-    {
-    	if(price_L<price_B && price_L<price_R)
-    		return price_L;
-    	else if(price_B<price_L && price_B<price_R)
-    		return price_B;
-    	else if(price_R<price_L && price_R<price_B)
-    		return price_R;
-    	else if(price_L==price_B && price_B<price_R)
-    		return price_L;
-    	else if(price_L==price_R && price_L<price_B)
-    		return price_L;
-    	else
-    		return price_R;
-    }
-    public static String getDayofWeek(String date) throws ParseException {
-    	SimpleDateFormat format1=new SimpleDateFormat("dd/MM/yyyy");
-        Date dt1=format1.parse(date);
-        DateFormat format2=new SimpleDateFormat("EE");
-        String finalDay=format2.format(dt1);
-        return  finalDay;
-    }
-    public static void main(String[] args) throws ParseException {
-    	  Scanner userInput=new Scanner(System.in);
-    	  Display();
-    	  ArrayList<String> dates=new ArrayList<>();
-          dates.add("3/10/2020");
-          dates.add("4/10/2020");
-    	  h1_regular= new Hotel("Lakewood",110,90,3);
-          h1_rewards =new Hotel("Lakewood",80,80,3);
-          h2_regular= new Hotel("Bridgewood",150,60,4);
-          h2_rewards= new Hotel("Bridgewood",110,50,4);
-          h3_regular= new Hotel("Ridgewood",220,150,5);
-          h3_rewards= new Hotel("Ridgewood",100,40,5);
-          System.out.println("Enter Whether Rewards or Regular");
-          String customertype=userInput.nextLine();
-          String result=calculateprice(dates,customertype);
-    }
+	public String hotelname;
+	public int weekdayrate;
+	public int weekendrate;
+	static int costofLakewood;
+	static int costofBridgewood;
+	static int costofRidgewood;
+	public int rating;
+	static int ratingofLakewood=3;
+	static int ratingofBridgewood=4;
+	static int ratingofRidgewood=5;
+	
+    //Welcome Message
+	public static void Display() {
+		System.out.println("Welcome to Hostel Reservation System");
+	}
+	//Constructor
+	public Hotel(String hotelname, int weekdayrate, int weekendrate, int rating) {
+		this.hotelname = hotelname;
+		this.weekdayrate = weekdayrate;
+		this.weekendrate = weekendrate;
+		this.rating = rating;
+	}
+	public Hotel() {
+		
+	}
+    //Method for Calculate Price of Hotel for Regular and Rewards Customer
+	public static String calculateprice(ArrayList<String> list, String customer,String typeOfMood) throws ParseException {
+		Iterator<String> it = list.iterator();
+		costofLakewood=0;
+		costofBridgewood=0;
+		costofRidgewood=0;
+		if (customer.equals("Regular")) {
+			while (it.hasNext()) {
+				String day = getDayofWeek(it.next());
+				if (day.equals("Sun") || day.equals("Sat")) {
+					costofLakewood += 90;
+					costofBridgewood += 60;
+					costofRidgewood += 150;
+				} else {
+					costofLakewood += 110;
+					costofBridgewood += 150;
+					costofRidgewood += 220;
+				}
+			}
+		} 
+		else {
+			while (it.hasNext()) {
+				String day = getDayofWeek(it.next());
+				if (day.equals("Sun") || day.equals("Sat")) {
+					costofLakewood += 80;
+					costofBridgewood += 50;
+					costofRidgewood += 40;
+				} else {
+					costofLakewood += 80;
+					costofBridgewood += 110;
+					costofRidgewood += 100;
+				}
+			}
+		}
+		if(typeOfMood.equals("goodRatingHotel")) {
+			int result=max(ratingofLakewood,ratingofBridgewood,ratingofRidgewood);
+			if (result == ratingofLakewood) {
+				System.out.println("Lakewood Hotel, Rating: " + ratingofLakewood + " Total cost for staying of "
+						+ list.size() + " days is: " + costofLakewood);
+				return "Lakewood";
+			} else if (result == ratingofBridgewood) {
+				System.out.println("Bridgewood Hotel, Rating: " + ratingofBridgewood + " Total cost for staying of "
+						+ list.size() + " days is: " +costofBridgewood );
+				return "Bridgewood";
+			} else {
+				System.out.println("Ridgewood Hotel, Rating: " + ratingofRidgewood + " Total cost for staying of "
+						+ list.size() + " days is: " + costofRidgewood);
+				return "Ridgewood";
+			}
+		}
+		else if(typeOfMood.equals("cheapHotel")){
+			int result = min(costofLakewood, costofBridgewood, costofRidgewood);
+			if (result == costofLakewood) {
+				System.out.println("Lakewood Hotel, Rating: " + ratingofLakewood + " Total cost for staying of "
+						+ list.size() + " days is: " + result);
+				return "Lakewood";
+			} else if (result == costofBridgewood) {
+				System.out.println("Bridgewood Hotel, Rating: " + ratingofBridgewood + " Total cost for staying of "
+						+ list.size() + " days is: " + result);
+				return "Bridgewood";
+			} else {
+				System.out.println("Ridgewood Hotel, Rating: " + ratingofRidgewood + " Total cost for staying of "
+						+ list.size() + " days is: " + result);
+				return "Ridgewood";
+			}
+		}
+		else {
+			return null;
+		}
+	}
+	//Method to get Highest Rating
+	public static int max(int rate_L, int rate_B,int rate_R) {
+		if(rate_L > rate_B && rate_L > rate_R)
+			return rate_L;
+		else if(rate_B > rate_L && rate_B > rate_R)
+			return rate_B;
+		else if(rate_R > rate_L && rate_R > rate_B)
+			return rate_R;
+		else if(rate_B == rate_L && rate_B > rate_R)
+			return rate_B;
+		else if(rate_L == rate_R && rate_L > rate_B)
+			return rate_L;
+		else
+			return rate_R;
+	}
+	//Method for determine which hotel is cheapest for us
+	public static int min(int price_L, int price_B, int price_R) {
+		if (price_L < price_B && price_L < price_R)
+			return price_L;
+		else if (price_B < price_L && price_B < price_R)
+			return price_B;
+		else if (price_R < price_L && price_R < price_B)
+			return price_R;
+		else if (price_L == price_B && price_B < price_R)
+			return price_L;
+		else if (price_L == price_R && price_L < price_B)
+			return price_L;
+		else
+			return price_R;
+	}
+	//Method for finding day of any particular date
+	public static String getDayofWeek(String date) throws ParseException {
+		SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
+		Date dt1 = format1.parse(date);
+		DateFormat format2 = new SimpleDateFormat("EE");
+		String finalDay = format2.format(dt1);
+		return finalDay;
+	}
 }
