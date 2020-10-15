@@ -1,20 +1,20 @@
 package com.bridgelabz.HotelManagement;
 
 import java.util.*;
-
 import java.text.*;
 
 public class Hotel {
-	public String hotelname;
-	public int weekdayrate;
-	public int weekendrate;
-	static int costofLakewood;
-	static int costofBridgewood;
-	static int costofRidgewood;
+	public String hotelName;
+	public int weekDayRate;
+	public int weekEndRate;
+	public int totalCost;
+	public int rewardWeekDayRate;
+	public int rewardWeekEndRate;
 	public int rating;
-	static int ratingofLakewood = 3;
-	static int ratingofBridgewood = 4;
-	static int ratingofRidgewood = 5;
+
+	public static ArrayList<String> HotelName;
+	public static HashMap<String, Integer> HotelNameAndRatingMap;
+	public static HashMap<String, Integer> HotelNameAndCostMap;
 
 	// Welcome Message
 	public static void Display() {
@@ -22,124 +22,75 @@ public class Hotel {
 	}
 
 	// Constructor
-	public Hotel(String hotelname, int weekdayrate, int weekendrate, int rating) {
-		this.hotelname = hotelname;
-		this.weekdayrate = weekdayrate;
-		this.weekendrate = weekendrate;
+	public Hotel(String hotelName, int weekDayRate, int weekEndRate, int rewardWeekDayRate, int rewardWeekEndRate,int rating) {
+		this.hotelName = hotelName;
+		this.weekDayRate = weekDayRate;
+		this.weekEndRate = weekEndRate;
+		this.rewardWeekDayRate = rewardWeekDayRate;
+		this.rewardWeekEndRate = rewardWeekEndRate;
 		this.rating = rating;
-	}
-
-	public Hotel() {
-
+		HotelNameAndRatingMap = new HashMap<>();
+		HotelNameAndCostMap = new HashMap<>();
+		HotelName = new ArrayList<>();
 	}
 
 	// Method for Calculate Price of Hotel for Regular and Rewards Customer
-	public static String calculateprice(ArrayList<String> list, String customer, String typeOfMood) throws ParseException {
+	public int calculateprice(ArrayList<String> list, String customerType) throws ParseException {
 		Iterator<String> it = list.iterator();
-		costofLakewood = 0;
-		costofBridgewood = 0;
-		costofRidgewood = 0;
-		if (customer.equals("Regular")) {
+		totalCost = 0;
+		if (customerType.equals("Regular")) {
 			while (it.hasNext()) {
 				String day = getDayofWeek(it.next());
 				if (day.equals("Sun") || day.equals("Sat")) {
-					costofLakewood += 90;
-					costofBridgewood += 60;
-					costofRidgewood += 150;
+					totalCost += weekEndRate;
 				} else {
-					costofLakewood += 110;
-					costofBridgewood += 150;
-					costofRidgewood += 220;
+					totalCost += weekDayRate;
 				}
 			}
 		} else {
 			while (it.hasNext()) {
 				String day = getDayofWeek(it.next());
 				if (day.equals("Sun") || day.equals("Sat")) {
-					costofLakewood += 80;
-					costofBridgewood += 50;
-					costofRidgewood += 40;
+					totalCost += rewardWeekEndRate;
 				} else {
-					costofLakewood += 80;
-					costofBridgewood += 110;
-					costofRidgewood += 100;
+					totalCost += rewardWeekEndRate;
 				}
 			}
 		}
-		if (typeOfMood.equals("goodRatingHotel")) {
-			int result = max(ratingofLakewood, ratingofBridgewood, ratingofRidgewood);
-			if (result == ratingofLakewood) {
-				System.out.println("Lakewood Hotel, Rating: " + ratingofLakewood + " Total cost for staying of "
-						+ list.size() + " days is: " + costofLakewood);
-				return "Lakewood";
-			} else if (result == ratingofBridgewood) {
-				System.out.println("Bridgewood Hotel, Rating: " + ratingofBridgewood + " Total cost for staying of "
-						+ list.size() + " days is: " + costofBridgewood);
-				return "Bridgewood";
-			} else {
-				System.out.println("Ridgewood Hotel, Rating: " + ratingofRidgewood + " Total cost for staying of "
-						+ list.size() + " days is: " + costofRidgewood);
-				return "Ridgewood";
-			}
-		} else if (typeOfMood.equals("cheapHotel")) {
-			int result = min(costofLakewood, costofBridgewood, costofRidgewood);
-			if (result == costofLakewood) {
-				System.out.println("Lakewood Hotel, Rating: " + ratingofLakewood + " Total cost for staying of "
-						+ list.size() + " days is: " + result);
-				return "Lakewood";
-			} else if (result == costofBridgewood) {
-				System.out.println("Bridgewood Hotel, Rating: " + ratingofBridgewood + " Total cost for staying of "
-						+ list.size() + " days is: " + result);
-				return "Bridgewood";
-			} else {
-				System.out.println("Ridgewood Hotel, Rating: " + ratingofRidgewood + " Total cost for staying of "
-						+ list.size() + " days is: " + result);
-				return "Ridgewood";
-			}
-		} else {
-			return null;
-		}
+		HotelNameAndCostMap.put(hotelName, totalCost);
+		HotelNameAndRatingMap.put(hotelName, rating);
+		return totalCost;
 	}
-
-	// Method to get Highest Rating
-	public static int max(int rate_L, int rate_B, int rate_R) {
-		List<Integer> list = Arrays.asList(rate_L, rate_B, rate_R);
-		Integer maxRating = list.stream().max(Integer::compare).get();
-		return maxRating;
+    //Method for Displaying Hotel Details
+	public static void DisplayHotelDetails() {
+		for (Map.Entry<String, Integer> entry : HotelNameAndCostMap.entrySet()) {
+			System.out.println(entry.getKey() + " " + entry.getValue());
+		}
 	}
 
 	// Method for determine which hotel is cheapest for us
-	public static int min(int price_L, int price_B, int price_R) {
-		List<Integer> list = Arrays.asList(price_L, price_B, price_R);
-		Integer minPrice = list.stream().min(Integer::compare).get();
+	public static int minHotelPrice() {
+		Integer minPrice = HotelNameAndCostMap.entrySet().stream().min(Map.Entry.comparingByValue()).get().getValue();
 		return minPrice;
 	}
 
-	// Method for Finding Cheapest Hotel and Highest Rated Hotel Using Map and Java Stream
-	public static String cheapestHotelByStream(ArrayList<String> list, String customer, String typeOfMood) throws ParseException {
-		String hotelName = calculateprice(list, customer, typeOfMood);
-		HashMap<String, Integer> HotelNameAndCostMap = new HashMap<>();
-		HashMap<String, Integer> HotelNameAndRatingMap = new HashMap<>();
-
-		if (typeOfMood.equals("goodRatingHotel")) {
-			HotelNameAndRatingMap.put("Lakewood", 3);
-			HotelNameAndRatingMap.put("Bridgewood", 4);
-			HotelNameAndRatingMap.put("Ridgewood", 5);
-			String bestRatingHotel = HotelNameAndRatingMap.entrySet().stream().max(Map.Entry.comparingByValue()).get()
-					.getKey();
-			return bestRatingHotel;
-		} else if (typeOfMood.equals("cheapHotel")) {
-			HotelNameAndCostMap.put("Lakewood", costofLakewood);
-			HotelNameAndCostMap.put("Bridgewood", costofBridgewood);
-			HotelNameAndCostMap.put("Ridgewood", costofRidgewood);
-			String cheapestHotel = HotelNameAndCostMap.entrySet().stream().min(Map.Entry.comparingByValue()).get()
-					.getKey();
-			return cheapestHotel;
-		} else
-			return null;
+	// Method for Finding Cheapest Hotel and Highest Rated Hotel Using Map and JavaStream
+	public String findCheapestHotel() throws ParseException {
+		Integer minPrice = minHotelPrice();
+		ArrayList<String> cheapestHotel = new ArrayList<>();
+		for (Map.Entry<String, Integer> entry : HotelNameAndCostMap.entrySet()) {
+			if (minPrice >= entry.getValue()) {
+				minPrice = entry.getValue();
+				cheapestHotel.add(entry.getKey());
+			}
+		}
+		String cheapestAndBestRatedHotel = HotelNameAndRatingMap.entrySet().stream().filter(p -> cheapestHotel.contains(p.getKey())).max(Map.Entry.comparingByValue()).get().getKey();
+		int highestRating = HotelNameAndRatingMap.entrySet().stream().filter(p -> cheapestHotel.contains(p.getKey())).max(Map.Entry.comparingByValue()).get().getValue();
+		System.out.println("Cheapest and Best Rated Hotel is: " + cheapestAndBestRatedHotel + " and Rating of Hotel is : " + highestRating);
+		return cheapestAndBestRatedHotel;
 	}
 
-	// Method for finding day of any particular date
+	// Method for finding day name of any particular date
 	public static String getDayofWeek(String date) throws ParseException {
 		SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
 		Date dt1 = format1.parse(date);
